@@ -5,8 +5,25 @@ import time
 import tkinter as tk
 from tkinter import ttk, filedialog
 import os
+import sys
 
-face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+def resource_path(relative_path):
+    """ PyInstaller 실행 파일에서 XML 파일을 올바르게 찾기 위한 함수 """
+    if getattr(sys, 'frozen', False):  # PyInstaller로 실행되는 경우
+        base_path = sys._MEIPASS
+    else:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+# XML 파일 경로 설정
+cascade_path = resource_path("haarcascade_frontalface_default.xml")
+face_cascade = cv2.CascadeClassifier(cascade_path)
+
+if face_cascade.empty():
+    print("오류: XML 파일을 로드할 수 없습니다.")
+else:
+    print("XML 파일이 정상적으로 로드되었습니다!")
 
 def load_overlay():
     file_path = filedialog.askopenfilename(filetypes=[("PNG Images", "*.png")])
